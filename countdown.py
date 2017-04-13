@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import os
 import requests
+import get_amsterdam_pic
 
 app = Flask(__name__)
 
@@ -39,7 +40,7 @@ def days_from_date(strdate):
     as date caclulate is relative to time
     """
     currentdate = datetime.today()
-    futuredate = datetime.strptime(strdate, '%Y-%m-%d')
+    futuredate = datetime.strptime(strdate, '%Y-%m-%d-%H%M')
     delta = futuredate - currentdate
     return delta.days + 1
 
@@ -66,7 +67,7 @@ def date_only(strdate):
     """
     days = days_from_date(strdate)
     assert (days >= -2), "Date needs to be in the future"
-    futuredate = datetime.strptime(strdate, '%Y-%m-%d')
+    futuredate = datetime.strptime(strdate, '%Y-%m-%d-%H%M')
     if days == -1:
         return "%d day since %s" % (1, futuredate.strftime("%d %B, %Y"))
     if days == -2:
@@ -82,20 +83,20 @@ def post(out):
     """ Posts a request to the slack webhook. Payload can be customized
     so the message in slack is customized. The variable out is the text 
     to be displayed.
-    """    
+    """
+    place =  get_amsterdam_pic.get_amsterdam_place()
 
     payload = {
         "attachments": [
             {   
-                "title": "COUNTDOWN!",
+                "title": "Amsterdam",
                 "text": out,
-                "color": "#7CD197"
+                "color": "#F7319B"
             }
         ]
     }
     
     r = requests.post(SLACK_URL, data=json.dumps(payload))
-
 
 def post_error():
     """Sends error message in Slack to alert the user
@@ -115,7 +116,6 @@ def post_error():
     }
     
     r = requests.post(SLACK_URL, data=json.dumps(payload))
- 
 
 @manager.option("-d", "--deadline", dest="date",
                       help="Specify the deadline in ISO format: yyyy-mm-dd", 
