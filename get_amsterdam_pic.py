@@ -1,18 +1,15 @@
 import string
+import os
 from random import randint
 from googleplaces import GooglePlaces, types, lang
-from PIL import Image
+import keys
 
+AUTH_KEY = keys.AUTH_KEY
 
 def get_amsterdam_place():
-    # image = Image.open('e
-    AMSTERDAM_COORDS = (52.371009, 4.892595)
-    AUTH_KEY = '***REMOVED***'
     google_places = GooglePlaces(AUTH_KEY)
-
-    places = google_places.nearby_search(location="Amsterdam", radius=500, type=types.TYPE_MUSEUM)
-
-    place = places.places[randint(0, len(places.places))]
+    places = google_places.nearby_search(location="Amsterdam", radius=500)
+    place = places.places[randint(0, len(places.places)-1)]
     place.get_details()
     photo = place.photos[0]
     str = string.Template("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$ref&key=$key")
@@ -20,4 +17,3 @@ def get_amsterdam_place():
 
     return { 'name': place.name, 'website': place.website, 'rating': place.rating, 'image': photo.url}
 
-print get_amsterdam_place()
