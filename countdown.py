@@ -68,7 +68,7 @@ def date_only(strdate):
     """
     days = days_from_date(strdate)
     assert (days >= -2), "Date needs to be in the future"
-    futuredate = datetime.strptime(strdate, '%Y-%m-%d-%H%M')
+    futuredate = datetime.strptime(strdate, '%Y-%m-%d')
     if days == -1:
         return "%d day since %s" % (1, futuredate.strftime("%d %B, %Y"))
     if days == -2:
